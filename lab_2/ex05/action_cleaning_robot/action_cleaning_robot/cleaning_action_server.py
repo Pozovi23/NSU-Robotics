@@ -116,8 +116,9 @@ class CLeaningActionServer(Node):
         bottom = max(0.0, start_y - half_size)
         top = min(11.0, start_y + half_size)
 
-        strip_width = 0.25
-        num_strips = max(1, int((right - left) / strip_width))
+        num_strips = 4
+
+        strip_width = (right - left) / num_strips
 
         cleaned_points = 0
         total_distance = 0.0
@@ -141,40 +142,61 @@ class CLeaningActionServer(Node):
             initial_cleaned_points = int(math.sqrt((left - start_x) ** 2 + (bottom - start_y) ** 2) / 0.1)
             cleaned_points += initial_cleaned_points
 
-            for strip in range(num_strips):
+            for strip in range(0, num_strips + 1, 2):
                 if goal_handle.is_cancel_requested:
                     return False, cleaned_points, total_distance
 
                 target_x = left + strip * strip_width
                 target_y = top
-                success = self.move_to_position(target_x, target_y, math.pi / 2, None)
+                success = self.move_to_position(target_x, target_y, 0, None)
                 if success:
                     distance = math.sqrt((target_x - current_x) ** 2 + (target_y - current_y) ** 2)
                     total_distance += distance
-                    points_in_strip = max(1, int(distance / 0.1))
+                    points_in_strip = max(1, int(distance * 10))
                     cleaned_points += points_in_strip
                     current_x, current_y = target_x, target_y
 
-                if strip < num_strips - 1:
-                    target_x = left + (strip + 1) * strip_width
+                if strip == num_strips:
+                    target_x = right
                     target_y = top
-                    success = self.move_to_position(target_x, target_y, 0, None)
+                    success = self.move_to_position(target_x, target_y, math.pi / 2, None)
                     if success:
                         distance = math.sqrt((target_x - current_x) ** 2 + (target_y - current_y) ** 2)
                         total_distance += distance
-                        points_in_strip = max(1, int(distance / 0.1))
+                        points_in_strip = max(1, int(distance * 10))
+                        cleaned_points += points_in_strip
+                        current_x, current_y = target_x, target_y
+                else:
+                    target_x = left + (strip + 1) * strip_width
+                    target_y = top
+                    success = self.move_to_position(target_x, target_y, -math.pi / 2, None)
+                    if success:
+                        distance = math.sqrt((target_x - current_x) ** 2 + (target_y - current_y) ** 2)
+                        total_distance += distance
+                        points_in_strip = max(1, int(distance * 10))
                         cleaned_points += points_in_strip
                         current_x, current_y = target_x, target_y
 
                     target_x = left + (strip + 1) * strip_width
                     target_y = bottom
-                    success = self.move_to_position(target_x, target_y, -math.pi / 2, None)
+                    success = self.move_to_position(target_x, target_y, 0, None)
                     if success:
                         distance = math.sqrt((target_x - current_x) ** 2 + (target_y - current_y) ** 2)
                         total_distance += distance
-                        points_in_strip = max(1, int(distance / 0.1))
+                        points_in_strip = max(1, int(distance * 10))
                         cleaned_points += points_in_strip
                         current_x, current_y = target_x, target_y
+
+                    target_x = left + (strip + 1 + 1) * strip_width
+                    target_y = bottom
+                    success = self.move_to_position(target_x, target_y, math.pi / 2, None)
+                    if success:
+                        distance = math.sqrt((target_x - current_x) ** 2 + (target_y - current_y) ** 2)
+                        total_distance += distance
+                        points_in_strip = max(1, int(distance * 10))
+                        cleaned_points += points_in_strip
+                        current_x, current_y = target_x, target_y
+
 
                 progress = min(100, int((strip + 1) / num_strips * 100))
                 feedback_msg.progress_percent = progress
@@ -183,9 +205,6 @@ class CLeaningActionServer(Node):
                 feedback_msg.current_y = current_y
                 goal_handle.publish_feedback(feedback_msg)
 
-                self.get_logger().info(f'Strip {strip + 1}/{num_strips} completed, cleaned {cleaned_points} points')
-
-            self.get_logger().info(f'Square cleaning completed: {cleaned_points} points, {total_distance:.2f} meters')
             return True, cleaned_points, total_distance
 
         except Exception as e:

@@ -36,13 +36,13 @@ class MoveToGoal(Node):
 
         self.Kp_angular = 1.0
         self.Ki_angular = 0.0
-        self.Kd_angular = 6.0
+        self.Kd_angular = 3.0
         self._integral_angular = 0
         self._last_error_angular = 0
 
-        self.Kp_linear = 2.0
+        self.Kp_linear = 0.5
         self.Ki_linear = 0.0
-        self.Kd_linear = 0.0
+        self.Kd_linear = 5.0
         self._integral_linear = 0
         self._last_error_linear = 0
 
@@ -137,7 +137,7 @@ class MoveToGoal(Node):
         angle = math.atan2(self.target_y - self.current_y, self.target_x - self.current_x)
         error = angle - self.current_theta
 
-        if abs(error) <= 0.001:
+        if abs(error) <= 0.01:
             self.current_state = "movement"
             twist_msg.angular.z = 0.0
             self.publisher_cmd_vel.publish(twist_msg)
@@ -159,12 +159,11 @@ class MoveToGoal(Node):
 
         dx = self.target_x - self.current_x
         dy = self.target_y - self.current_y
-
         distance = math.sqrt(dx ** 2 + dy ** 2)
 
         desired_angle = math.atan2(dy, dx)
-
         angle_error = desired_angle - self.current_theta
+        angle_error = math.atan2(math.sin(angle_error), math.cos(angle_error))
 
         if distance <= 0.01:
             self.current_state = "final_rotation"
@@ -174,32 +173,39 @@ class MoveToGoal(Node):
             self._last_error_linear = 0
             return
 
-        self._integral_linear += distance
-        derivative_linear = distance - self._last_error_linear
-        self._last_error_linear = distance
+        if abs(angle_error) > math.pi / 2:
+            linear_speed = -min(distance * self.Kp_linear, 1.0)
+            desired_angle = math.atan2(-dy, -dx)
+            angle_error = desired_angle - self.current_theta
+            angle_error = math.atan2(math.sin(angle_error), math.cos(angle_error))
+        else:
+            self._integral_linear += distance
+            derivative_linear = distance - self._last_error_linear
+            self._last_error_linear = distance
+            linear_speed = self.Kp_linear * distance + self.Ki_linear * self._integral_linear + self.Kd_linear * derivative_linear
+            linear_speed = min(linear_speed, 1.0)
 
-        linear_speed = self.Kp_linear * distance + self.Ki_linear * self._integral_linear + self.Kd_linear * derivative_linear
-
-        if angle_error > math.pi / 2:
-            linear_speed -= linear_speed
-
-        linear_speed = max(min(linear_speed, 1.0), -1.0)
+        self._integral_angular += angle_error
+        derivative_angular = angle_error - self._last_error_angular
+        self._last_error_angular = angle_error
+        angular_speed = self.Kp_angular * angle_error + self.Ki_angular * self._integral_angular + self.Kd_angular * derivative_angular
+        angular_speed = max(min(angular_speed, 2.0), -2.0)
 
         twist_msg.linear.x = linear_speed
+        twist_msg.angular.z = angular_speed
         self.publisher_cmd_vel.publish(twist_msg)
 
     def rotate_to_final_angle(self):
         twist_msg = Twist()
         error = self.final_angle - self.current_theta
 
-        if abs(error) <= 0.001:
+        if abs(error) <= 0.01:
             twist_msg.angular.z = 0.0
             self.publisher_cmd_vel.publish(twist_msg)
             self._integral_angular = 0
             self._last_error_angular = 0
 
             self.current_state = "done"
-            self.get_logger().info("Movement completed")
             return
 
         self._integral_angular += error

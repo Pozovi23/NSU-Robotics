@@ -82,8 +82,8 @@ def main(args=None):
 
     action_client = CLeaningActionClient()
 
-    action_client.add_goal("clean_square", 5.0, 2.0, 2.0)  # Уборка квадрата 5x5
-    action_client.add_goal("return_home", 0.0, 5.5, 5.5)  # Возврат в центр
+    action_client.add_goal("clean_square", 5.0, 2.0, 2.0)
+    action_client.add_goal("return_home", 0.0, 2.0, 8.0)
 
     action_client.start_execution()
 
