@@ -1,8 +1,9 @@
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument
-from launch.substitutions import LaunchConfiguration
+from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
 from launch.conditions import IfCondition
 from launch_ros.actions import Node
+from launch_ros.substitutions import FindPackageShare
 
 
 def generate_launch_description():
@@ -21,7 +22,11 @@ def generate_launch_description():
 
         DeclareLaunchArgument(
             'rvizconfig',
-            default_value='share/time_travel/rviz/time_travel.rviz',
+            default_value=PathJoinSubstitution([
+                FindPackageShare('time_travel'),
+                'rviz',
+                'time_travel.rviz'
+            ]),
             description='Path to RViz config file'
         ),
 

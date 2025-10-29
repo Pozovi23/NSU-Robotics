@@ -57,12 +57,34 @@ Visualization Manager:
     - Class: rviz_default_plugins/MarkerArray
       Enabled: true
       Name: Target Markers
+      Namespaces:
+        target: true
       Topic:
         Depth: 5
         Durability Policy: Volatile
         History Policy: Keep Last
         Reliability Policy: Reliable
         Value: /current_target
+      Value: true
+    - Class: rviz_default_plugins/Marker
+      Enabled: true
+      Name: Turtle1
+      Topic:
+        Depth: 5
+        Durability Policy: Volatile
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+        Value: /turtle1/color_sensor
+      Value: true
+    - Class: rviz_default_plugins/Marker
+      Enabled: true
+      Name: Turtle2
+      Topic:
+        Depth: 5
+        Durability Policy: Volatile
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+        Value: /turtle2/color_sensor
       Value: true
   Enabled: true
   Global Options:
