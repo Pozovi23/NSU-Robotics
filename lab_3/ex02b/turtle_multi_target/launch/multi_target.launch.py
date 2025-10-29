@@ -1,8 +1,9 @@
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument, ExecuteProcess, TimerAction
-from launch.substitutions import LaunchConfiguration
+from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
 from launch_ros.actions import Node
-import os
+from launch_ros.substitutions import FindPackageShare
+import launch
 
 
 def generate_launch_description():
@@ -23,7 +24,6 @@ def generate_launch_description():
             description="Distance threshold for automatic target switching",
         ),
 
-        # Запускаем turtlesim
         Node(
             package='turtlesim',
             executable='turtlesim_node',
@@ -31,7 +31,6 @@ def generate_launch_description():
             output='screen'
         ),
 
-        # Даем время turtlesim_node запуститься
         TimerAction(
             period=2.0,
             actions=[
@@ -46,8 +45,7 @@ def generate_launch_description():
 
         TimerAction(
             period=3.0,
-            actions=[
-                # Спавним turtle3
+            actions=
                 ExecuteProcess(
                     cmd=['ros2', 'service', 'call', '/spawn', 'turtlesim/srv/Spawn',
                          '{x: 1.0, y: 1.0, theta: 0.0, name: "turtle3"}'],
@@ -56,7 +54,6 @@ def generate_launch_description():
             ]
         ),
 
-        # Broadcaster для turtle1
         Node(
             package='turtle_multi_target',
             executable='turtle_tf2_broadcaster',
@@ -64,7 +61,6 @@ def generate_launch_description():
             parameters=[{'turtlename': 'turtle1'}]
         ),
 
-        # Broadcaster для turtle2
         Node(
             package='turtle_multi_target',
             executable='turtle_tf2_broadcaster',
@@ -72,7 +68,6 @@ def generate_launch_description():
             parameters=[{'turtlename': 'turtle2'}]
         ),
 
-        # Broadcaster для turtle3
         Node(
             package='turtle_multi_target',
             executable='turtle_tf2_broadcaster',
@@ -80,7 +75,6 @@ def generate_launch_description():
             parameters=[{'turtlename': 'turtle3'}]
         ),
 
-        # Multi target broadcaster
         Node(
             package='turtle_multi_target',
             executable='multi_target_broadcaster',
@@ -93,7 +87,6 @@ def generate_launch_description():
             ]
         ),
 
-        # Turtle controller с задержкой чтобы все TF были готовы
         TimerAction(
             period=5.0,
             actions=[
@@ -106,10 +99,29 @@ def generate_launch_description():
             ]
         ),
 
-        # Target switcher
         Node(
             package='turtle_multi_target',
             executable='target_switcher',
             name='target_switcher'
+        ),
+
+        TimerAction(
+            period=6.0,
+            actions=[
+                Node(
+                    package='rviz2',
+                    executable='rviz2',
+                    name='rviz2',
+                    arguments=[
+                        '-d', PathJoinSubstitution([
+                            FindPackageShare('turtle_multi_target'),
+                            'rviz',
+                            'carrot.rviz'
+                        ])
+                    ],
+                    condition=launch.conditions.IfCondition("true"),
+                    output='screen'
+                )
+            ]
         ),
     ])

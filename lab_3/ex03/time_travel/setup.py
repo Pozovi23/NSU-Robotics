@@ -2,7 +2,7 @@ from setuptools import find_packages, setup
 import os
 from glob import glob
 
-package_name = 'turtle_multi_target'
+package_name = 'time_travel'
 
 setup(
     name=package_name,
@@ -30,10 +30,9 @@ setup(
     },
     entry_points={
         'console_scripts': [
-            'target_switcher = turtle_multi_target.target_switcher:main',
-            'turtle_controller = turtle_multi_target.turtle_controller:main',
-            'multi_target_broadcaster = turtle_multi_target.multi_target_broadcaster:main',
-            'turtle_tf2_broadcaster = turtle_multi_target.turtle_tf2_broadcaster:main',
+            'turtle_tf2_broadcaster = time_travel.turtle_tf2_broadcaster:main',
+            'turtle_tf2_listener = time_travel.turtle_tf2_listener:main',
+            'turtle_tf2_time_travel_listener = time_travel.turtle_tf2_time_travel_listener:main',
         ],
     },
 )

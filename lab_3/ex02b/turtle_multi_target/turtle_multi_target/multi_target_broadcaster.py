@@ -10,7 +10,6 @@ class MultiTargetBroadcaster(Node):
     def __init__(self):
         super().__init__("multi_target_broadcaster")
 
-        # Параметры для carrot1
         self.declare_parameter("radius", 2.0)
         self.declare_parameter("direction_of_rotation", 1)
 
@@ -30,11 +29,9 @@ class MultiTargetBroadcaster(Node):
             .integer_value
         )
 
-        # Разные скорости для разных carrot'ов
-        angle1 = elapsed_time * 0.8 * direction  # Быстрее
-        angle2 = elapsed_time * 0.5 * direction  # Медленнее
+        angle1 = elapsed_time * 0.8 * direction
+        angle2 = elapsed_time * 0.5 * direction
 
-        # Carrot1 - вращается вокруг turtle1
         t1 = TransformStamped()
         t1.header.stamp = self.get_clock().now().to_msg()
         t1.header.frame_id = "turtle1"
@@ -47,7 +44,6 @@ class MultiTargetBroadcaster(Node):
         t1.transform.rotation.z = 0.0
         t1.transform.rotation.w = 1.0
 
-        # Carrot2 - вращается вокруг turtle3
         t2 = TransformStamped()
         t2.header.stamp = self.get_clock().now().to_msg()
         t2.header.frame_id = "turtle3"
@@ -60,7 +56,6 @@ class MultiTargetBroadcaster(Node):
         t2.transform.rotation.z = 0.0
         t2.transform.rotation.w = 1.0
 
-        # Static target - фиксированная позиция
         t3 = TransformStamped()
         t3.header.stamp = self.get_clock().now().to_msg()
         t3.header.frame_id = "world"

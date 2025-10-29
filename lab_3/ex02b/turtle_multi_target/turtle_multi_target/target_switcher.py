@@ -1,31 +1,55 @@
 import rclpy
-from rclpy.executors import ExternalShutdownException
 from rclpy.node import Node
-import std_msgs.msg
+import sys
+import select
+import tty
+import termios
+from std_msgs.msg import String
 
 
-class TargetSwitcher(Node):
+class KeyboardListener(Node):
     def __init__(self):
-        super().__init__("target_switcher")
+        super().__init__('keyboard_listener')
+        self.publisher = self.create_publisher(String, '/keyboard_input', 10)
 
-        self.create_subscription(
-            std_msgs.msg.String,
-            "/keyboard_input",
-            self.keyboard_callback,
-            10
-        )
+    def read_key(self):
+        try:
+            fd = sys.stdin.fileno()
+            old_settings = termios.tcgetattr(fd)
+            try:
+                tty.setraw(sys.stdin.fileno())
+                [i, _, _] = select.select([sys.stdin], [], [], 0.1)
+                if i:
+                    key = sys.stdin.read(1)
+                    return key
+                return None
+            finally:
+                termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
+        except Exception:
+            return None
 
-    def keyboard_callback(self, msg):
-        if msg.data == 'n':
-            self.get_logger().info("Manual switch requested - sent to controller")
+    def spin(self):
+        try:
+            while rclpy.ok():
+                key = self.read_key()
+                if key == 'n':
+                    msg = String()
+                    msg.data = 'n'
+                    self.publisher.publish(msg)
+                elif key == 'q':
+                    break
+        except Exception as e:
+            self.get_logger().error(f"Error: {e}")
 
 
 def main():
     rclpy.init()
+    node = KeyboardListener()
+
     try:
-        node = TargetSwitcher()
-        rclpy.spin(node)
-    except (KeyboardInterrupt, ExternalShutdownException):
+        node.spin()
+    except KeyboardInterrupt:
         pass
     finally:
+        node.destroy_node()
         rclpy.shutdown()

@@ -10,7 +10,7 @@ def generate_launch_description():
             DeclareLaunchArgument(
                 "radius",
                 default_value="2.0",
-                description="Radius of carrot rotation around turtle1",
+                description="Radius of carrot.rviz rotation around turtle1",
             ),
             DeclareLaunchArgument(
                 "direction_of_rotation",
