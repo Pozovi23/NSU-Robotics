@@ -21,7 +21,7 @@ install(
 # Install URDF file
 install(
   FILES
-    src/description/robot.urdf
+    src/description/robot.xacro.urdf
   DESTINATION share/${PROJECT_NAME}/src/description
 )
 
