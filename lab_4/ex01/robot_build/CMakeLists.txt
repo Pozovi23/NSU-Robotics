@@ -11,28 +11,24 @@ find_package(ament_cmake REQUIRED)
 # further dependencies manually.
 # find_package(<dependency> REQUIRED)
 
-# Install launch files
 install(
   FILES
     launch/robot_display.launch.py
   DESTINATION share/${PROJECT_NAME}/launch
 )
 
-# Install URDF file
 install(
   FILES
     src/description/robot.xacro.urdf
   DESTINATION share/${PROJECT_NAME}/src/description
 )
 
-# Install RViz config
 install(
   FILES
     rviz/robot.rviz
   DESTINATION share/${PROJECT_NAME}/rviz
 )
 
-# Install mesh files
 install(
   DIRECTORY
     meshes/
