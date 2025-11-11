@@ -66,13 +66,13 @@
       <parent link="base_link"/>
       <child link="${prefix}_wheel"/>
       <origin xyz="-0.02 ${reflect * 0.06} ${base_z_offset}" rpy="0 0 0"/>
-      <axis xyz="0 ${reflect} 0"/>
+      <axis xyz="0 1 0"/>
       <dynamics damping="0.1" friction="0.0"/>
     </joint>
   </xacro:macro>
 
-  <xacro:wheel prefix="left" reflect="1" turn_angle="0"/>
-  <xacro:wheel prefix="right" reflect="-1" turn_angle="3.1415"/>
+  <xacro:wheel prefix="left" reflect="-1" turn_angle="0"/>
+  <xacro:wheel prefix="right" reflect="1" turn_angle="3.1415"/>
 
   <link name="front_caster">
     <visual>
