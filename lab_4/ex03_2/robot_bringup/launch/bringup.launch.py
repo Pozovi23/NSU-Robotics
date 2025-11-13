@@ -45,18 +45,18 @@ def generate_launch_description():
     )
 
     # Joint state publisher (только если не GUI)
-    joint_state_publisher_node = Node(
-        package='joint_state_publisher',
-        executable='joint_state_publisher',
-        condition=UnlessCondition(gui)
-    )
-
-    # Joint state publisher GUI (если gui=true)
-    joint_state_publisher_gui_node = Node(
-        package='joint_state_publisher_gui',
-        executable='joint_state_publisher_gui',
-        condition=IfCondition(gui)
-    )
+    # joint_state_publisher_node = Node(
+    #     package='joint_state_publisher',
+    #     executable='joint_state_publisher',
+    #     condition=UnlessCondition(gui)
+    # )
+    #
+    # # Joint state publisher GUI (если gui=true)
+    # joint_state_publisher_gui_node = Node(
+    #     package='joint_state_publisher_gui',
+    #     executable='joint_state_publisher_gui',
+    #     condition=IfCondition(gui)
+    # )
 
     # RViz
     rviz_node = Node(
@@ -73,7 +73,7 @@ def generate_launch_description():
         DeclareLaunchArgument('gui', default_value='true', description='Enable joint_state_publisher_gui'),
         gazebo_launch,
         robot_state_publisher_node,
-        joint_state_publisher_node,
-        joint_state_publisher_gui_node,
+        # joint_state_publisher_node,
+        # joint_state_publisher_gui_node,
         rviz_node
     ])
