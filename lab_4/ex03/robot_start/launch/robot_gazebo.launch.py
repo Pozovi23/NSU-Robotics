@@ -50,19 +50,16 @@ def generate_launch_description():
         parameters=[{'use_sim_time': use_sim_time}]
     )
 
-    # Bridge
+    bridge_config = os.path.join(pkg_share, 'config', 'bridge.yaml')
+
     bridge = Node(
         package='ros_gz_bridge',
         executable='parameter_bridge',
-        arguments=[
-            '/cmd_vel@geometry_msgs/msg/Twist]gz.msgs.Twist',
-            '/odom@nav_msgs/msg/Odometry[gz.msgs.Odometry',
-            '/tf@tf2_msgs/msg/TFMessage[gz.msgs.Pose_V',
-            '/joint_states@sensor_msgs/msg/JointState[gz.msgs.Model',
-            '/clock@rosgraph_msgs/msg/Clock[gz.msgs.Clock'
-        ],
-        parameters=[{'use_sim_time': use_sim_time}],
-        output='screen'
+        output='screen',
+        parameters=[
+            {'config_file': bridge_config},
+            {'use_sim_time': use_sim_time}
+        ]
     )
 
     # Joint state publisher (только если не GUI)

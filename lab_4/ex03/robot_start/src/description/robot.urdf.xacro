@@ -71,8 +71,8 @@
     </joint>
   </xacro:macro>
 
-  <xacro:wheel prefix="left" reflect="-1" turn_angle="0"/>
-  <xacro:wheel prefix="right" reflect="1" turn_angle="3.1415"/>
+  <xacro:wheel prefix="left" reflect="1" turn_angle="0"/>
+  <xacro:wheel prefix="right" reflect="-1" turn_angle="3.1415"/>
 
   <link name="front_caster">
     <visual>

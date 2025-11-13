@@ -4,11 +4,11 @@
   <!-- Diff drive plugin for control via /cmd_vel -->
   <gazebo>
     <plugin filename="libgz-sim8-diff-drive-system.so" name="gz::sim::v8::systems::DiffDrive">
-      <left_joint>right_wheel_joint</left_joint>
-      <right_joint>left_wheel_joint</right_joint>
+      <left_joint>left_wheel_joint</left_joint>
+      <right_joint>right_wheel_joint</right_joint>
       <wheel_separation>0.12</wheel_separation>
       <wheel_radius>0.02</wheel_radius>
-      <topic>/cmd_vel</topic>
+      <topic>/model/my_robot/cmd_vel</topic>
       <odom_topic>/odom</odom_topic>
       <tf_topic>/tf</tf_topic>
       <robot_base_frame>base_link</robot_base_frame>
