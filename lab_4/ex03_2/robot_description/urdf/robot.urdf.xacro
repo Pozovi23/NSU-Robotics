@@ -72,7 +72,7 @@
   </xacro:macro>
 
   <xacro:wheel prefix="left" reflect="1" turn_angle="0"/>
-  <xacro:wheel prefix="right" reflect="-1" turn_angle="0"/>  <!-- Изменено на 0 для симметрии -->
+  <xacro:wheel prefix="right" reflect="-1" turn_angle="3.1415"/>  <!-- Изменено на 0 для симметрии -->
 
   <link name="front_caster">
     <visual>
