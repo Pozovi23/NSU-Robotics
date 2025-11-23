@@ -139,6 +139,7 @@
           </intrinsics>
         </lens>
       </camera>
+
       <topic>depth_camera</topic>
       <gz_frame_id>camera_link</gz_frame_id>
       <frame_id>camera_link</frame_id>

@@ -83,20 +83,6 @@ Visualization Manager:
       Alpha: 1.0
 
     - Alpha: 1.0
-      Autocompute Value Bounds: false
-      Class: rviz_default_plugins/Image
-      Colormap: Viridis
-      Enabled: true
-      Max Value: 10.0
-      Min Value: 0.1
-      Name: Depth Image
-      Normalize Range: true
-      Topic:
-        Value: /depth_camera/depth_image
-      Transport Hint: raw
-
-    # New: Display for point cloud from depth camera
-    - Alpha: 1.0
       Class: rviz_default_plugins/PointCloud2
       Color: 255; 255; 255
       Color Transformer: FlatColor
