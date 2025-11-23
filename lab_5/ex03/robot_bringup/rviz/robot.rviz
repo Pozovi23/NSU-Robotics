@@ -99,6 +99,30 @@ Visualization Manager:
         Value: /depth_camera/points
       Use Fixed Frame: true
 
+    - Alpha: 1.0
+      Arrow Alpha: 0.5
+      Arrow Color: 255; 0; 0
+      Arrow Length: 0.3
+      Arrow Shaft Diameter: 0.05
+      Arrow Head Diameter: 0.1
+      Arrow Head Length: 0.1
+      Buffer Length: 1
+      Class: rviz_imu_plugin/Imu
+      Covariance: true
+      Covariance Alpha: 0.3
+      Covariance Color: 255; 255; 0
+      Covariance Scale: 0.1
+      Enabled: true
+      Name: Imu
+      Queue Size: 10
+      Reference Frame: <Fixed Frame>
+      Topic:
+        Depth: 5
+        Durability Policy: Volatile
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+        Value: /imu
+
   Enabled: true
   Global Options:
     Background Color: 48; 48; 48
